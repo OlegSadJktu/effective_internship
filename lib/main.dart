@@ -1,4 +1,6 @@
+import 'package:effective_internship/pages/enter_page.dart';
 import 'package:effective_internship/pages/main_page.dart';
+import 'package:effective_internship/themes/dark.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,10 +14,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      themeMode: ThemeMode.dark,
+      darkTheme: darkTheme,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MainPage(),
+      home: const EnterPage(),
     );
   }
 }

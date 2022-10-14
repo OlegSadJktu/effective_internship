@@ -16,7 +16,7 @@ class EnterPage extends StatelessWidget {
               }),
             );
           },
-          child: const Text('asd'),
+          child: const Text('Open page'),
         ),
       ),
     );

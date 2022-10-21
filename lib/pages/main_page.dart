@@ -30,12 +30,10 @@ class _MainPageState extends State<MainPage> {
 
   Future<PaletteGenerator> _getPalette(Image image) async {
     a += 1;
-    print('he$a');
     final paletteGenerator = await PaletteGenerator.fromImageProvider(
       image.image,
       size: Size(10, 20),
       maximumColorCount: 1,
-      // targets: [PaletteTarget]
     );
     return paletteGenerator;
   }
@@ -46,7 +44,9 @@ class _MainPageState extends State<MainPage> {
     _currentColorIndex = 0;
     _repo.getCharacters().then((value) {
       setState(() {
+        print('asd');
         _characters = value;
+        _colors..clear()..fillRange(0, _characters!.length, Colors.red);
         _images = List.from(value.map((e) => Image.network(e.thumbnailUrl!)));
         _updateColors();
       });
@@ -54,12 +54,10 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> _updateColors() async {
-    _colors.clear();
-    for (var im in _images!) {
-      final palette = await _getPalette(im);
-      _colors.add(palette.dominantColor?.color);
+    for (var i = 0; i < _images!.length; i++) {
+      final palette = await _getPalette(_images![i]);
+      _colors[i] = palette.dominantColor?.color;
     }
-    print('isEmpty1 => ${_colors.isEmpty}');
     setState((){});
   }
 
@@ -89,8 +87,7 @@ class _MainPageState extends State<MainPage> {
         enableInfiniteScroll: false,
         onPageChanged: (index, _) => _updatePage(index),
       ),
-      items: List.generate(_characters!.length, (index) {
-        final hero = _characters![index];
+      items: _characters!.map((hero) {
         return Column(
           children: [
             const Spacer(),
@@ -115,12 +112,17 @@ class _MainPageState extends State<MainPage> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fitHeight,
-                        image: _images![index].image,// Image.network(e.thumbnailUrl!).image
+                        image: Image.network(
+                          hero.thumbnailUrl!,
+                          loadingBuilder: (context, _, __) {
+                            return const Center(child: CircularProgressIndicator());
+                          },
+                        ).image,
                       ),
                     ),
                     child: Hero(
-                      tag: 'caption${_characters![index].id}',
-                      child: HeroCaption(_characters![index].name),
+                      tag: 'caption${hero.id}',
+                      child: HeroCaption(hero.name),
                     ),
                   ),
                 ),
@@ -129,10 +131,7 @@ class _MainPageState extends State<MainPage> {
             const Spacer(),
           ],
         );
-
-      }),
-
-
+      }).toList(),
     );
   }
 
@@ -164,7 +163,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('isEmpty => ${_colors.isEmpty}');
     final size = MediaQuery.of(context).size;
     final safeAreaPadding = MediaQuery.of(context).padding;
     return Scaffold(

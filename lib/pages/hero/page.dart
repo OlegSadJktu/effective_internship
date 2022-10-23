@@ -31,12 +31,10 @@ class _HeroPageState extends State<HeroPage> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.fitHeight,
-            image: Image.network(widget.imageUrl).image,
-
-          )
-        ),
+            image: DecorationImage(
+          fit: BoxFit.fitHeight,
+          image: Image.network(widget.imageUrl).image,
+        )),
         child: Hero(
           tag: 'caption${widget.heroId}',
           child: HeroCaption(

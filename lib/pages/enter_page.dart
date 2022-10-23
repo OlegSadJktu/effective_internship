@@ -21,5 +21,4 @@ class EnterPage extends StatelessWidget {
       ),
     );
   }
-
 }

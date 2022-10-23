@@ -1,11 +1,11 @@
-class Character {
+import 'package:effective_internship/database/database.dart';
 
+class Character {
   const Character({
     required this.id,
     required this.name,
     required this.description,
     this.thumbnailUrl,
-
   });
 
   factory Character.fromJson(Map<String, dynamic> data) {
@@ -17,7 +17,15 @@ class Character {
         id: id,
         name: name,
         description: description,
-        thumbnailUrl: thumbnailUrl
+        thumbnailUrl: thumbnailUrl);
+  }
+
+  factory Character.fromDatabase(Hero hero) {
+    return Character(
+      id: hero.id,
+      name: hero.name,
+      description: hero.description,
+      thumbnailUrl: hero.imagePath,
     );
   }
 
@@ -25,7 +33,4 @@ class Character {
   final String name;
   final String description;
   final String? thumbnailUrl;
-
-
-
 }

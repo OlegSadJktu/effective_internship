@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clippy_flutter/clippy_flutter.dart';
 import 'package:effective_internship/constants/assets.dart';
@@ -10,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 class MainPage extends StatefulWidget {
-
   const MainPage({Key? key}) : super(key: key);
 
   @override
@@ -18,7 +19,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
   final CharactersRepository _repo = Get.put(CharactersRepository());
   final _pageController = CarouselController();
 
@@ -42,23 +42,36 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _currentColorIndex = 0;
-    _repo.getCharacters().then((value) {
-      setState(() {
-        print('asd');
-        _characters = value;
-        _colors..clear()..fillRange(0, _characters!.length, Colors.red);
-        _images = List.from(value.map((e) => Image.network(e.thumbnailUrl!)));
-        _updateColors();
-      });
-    },);
+    _repo.getCharacters().then(
+      (value) {
+        setState(() {
+          _characters = value;
+          _colors
+            ..clear()
+            ..addAll(Iterable.generate(
+                _characters!.length,
+                (e) => Colors
+                    .transparent)); //..fillRange(0, _characters!.length, Colors.red);
+          _images = List.from(value.map((e) => Image.file(File(e.thumbnailUrl!))));
+          _updateColors();
+        });
+      },
+    );
   }
 
   Future<void> _updateColors() async {
-    for (var i = 0; i < _images!.length; i++) {
+    if (_images!.isEmpty) {
+      return;
+    }
+    final palette = await _getPalette(_images![0]);
+    setState(() {
+      _colors[0] = palette.dominantColor?.color;
+    });
+    for (var i = 1; i < _images!.length; i++) {
       final palette = await _getPalette(_images![i]);
       _colors[i] = palette.dominantColor?.color;
     }
-    setState((){});
+    setState(() {});
   }
 
   void _updatePage(int page) {
@@ -68,7 +81,6 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       _currentColorIndex = page;
     });
-
   }
 
   Widget _pageView() {
@@ -83,11 +95,12 @@ class _MainPageState extends State<MainPage> {
         viewportFraction: 0.77,
         scrollPhysics: const BouncingScrollPhysics(),
         enlargeCenterPage: true,
-        aspectRatio: 8/ 15, // 15/ 10,
+        aspectRatio: 8 / 15,
         enableInfiniteScroll: false,
         onPageChanged: (index, _) => _updatePage(index),
       ),
       items: _characters!.map((hero) {
+        print('url => ${hero.thumbnailUrl}');
         return Column(
           children: [
             const Spacer(),
@@ -95,13 +108,18 @@ class _MainPageState extends State<MainPage> {
               flex: 3,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return HeroPage(
-                      heroId: hero.id,
-                      imageUrl: hero.thumbnailUrl!,
-                      heroName: hero.name,
-                    );
-                  },),);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return HeroPage(
+                          heroId: hero.id,
+                          imageUrl: hero.thumbnailUrl!,
+                          heroName: hero.name,
+                        );
+                      },
+                    ),
+                  );
                 },
                 child: Card(
                   clipBehavior: Clip.antiAlias,
@@ -112,11 +130,12 @@ class _MainPageState extends State<MainPage> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fitHeight,
-                        image: Image.network(
-                          hero.thumbnailUrl!,
-                          loadingBuilder: (context, _, __) {
-                            return const Center(child: CircularProgressIndicator());
-                          },
+                        image: Image.file(
+                          File(hero.thumbnailUrl!),
+                          // loadingBuilder: (context, _, __) {
+                          //   return const Center(
+                          //       child: CircularProgressIndicator());
+                          // },
                         ).image,
                       ),
                     ),
@@ -176,17 +195,18 @@ class _MainPageState extends State<MainPage> {
               left: 0,
               right: 0,
               child: Diagonal(
-                clipHeight: (size.height - 2 *safeAreaPadding.top) /2,
+                clipHeight: (size.height - 2 * safeAreaPadding.top) / 2,
                 position: DiagonalPosition.TOP_RIGHT,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
                   decoration: BoxDecoration(
-                    color: _colors.isNotEmpty ?  _colors[_currentColorIndex] : Colors.transparent,// const Color(0xff2A2629),
+                    color: _colors.isNotEmpty
+                        ? _colors[_currentColorIndex]
+                        : Colors.transparent, // const Color(0xff2A2629),
                   ),
                 ),
               ),
             ),
-
             Column(
               children: [
                 _logo(),

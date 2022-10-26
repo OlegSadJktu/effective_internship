@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
@@ -30,8 +32,6 @@ Future<Hero> fromApi(Map<String, dynamic> data) async {
       name: name,
       description: description,
       imagePath: file.path,
-      // description: description,
-      // thumbnailUrl: thumbnailUrl
   );
 }
 // }
@@ -39,7 +39,7 @@ Future<Hero> fromApi(Map<String, dynamic> data) async {
 class CharactersRepository extends GetxController {
   static const String _baseUrl =
       'https://gateway.marvel.com:443/v1/public/characters';
-  static const String _additionalOptions = '?series=24229';
+  static const String _additionalOptions = '?series=24229&limit=2';
   static const String _publicKey = 'bec75f5786230c12f6c78e7940844074';
   static const String _privateKey = '807ba57856a1230adb113edd3f44924df04168ac';
 
@@ -99,7 +99,7 @@ class CharactersRepository extends GetxController {
       }
     }
     final response = await _database.getHeroes();
-    print('ulrs => ${response.map((e) => e.imagePath)}');
+    log('len => ${response.length} ulrs => ${response.map((e) => e.description)}', name: 'hero');
     return response.map(Character.fromDatabase).toList();
   }
 }

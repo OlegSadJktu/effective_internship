@@ -11,7 +11,7 @@ class Heroes extends Table {
   IntColumn get id => integer()();
   TextColumn get name => text()();
   TextColumn get description => text()();
-  TextColumn get imagePath => text().withLength(min: 50, max: 100)();
+  TextColumn get imagePath => text()();
 
   @override
   Set<Column>? get primaryKey => {id};
@@ -24,8 +24,7 @@ class MarvelDatabase extends _$MarvelDatabase {
 
   Future<void> insertHeroes(List<Hero> list) async {
     await batch((batch) {
-      // print('before save => ${list.sublist(0,10).map((e) => e.imagePath)}');
-      batch.insertAll(heroes, list);
+      batch.insertAllOnConflictUpdate(heroes, list);
     });
   }
 

@@ -1,5 +1,6 @@
-import 'package:effective_internship/pages/main_page.dart';
+import 'package:effective_internship/pages/main_page/page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class EnterPage extends StatelessWidget {
   const EnterPage({Key? key}) : super(key: key);
@@ -10,11 +11,7 @@ class EnterPage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                return const MainPage();
-              }),
-            );
+            Get.toNamed('/main');
           },
           child: const Text('Open page'),
         ),

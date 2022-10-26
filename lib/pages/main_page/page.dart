@@ -4,7 +4,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clippy_flutter/clippy_flutter.dart';
 import 'package:effective_internship/constants/assets.dart';
 import 'package:effective_internship/models/marvel/character.dart';
+import 'package:effective_internship/pages/hero/args.dart';
 import 'package:effective_internship/pages/hero/page.dart';
+import 'package:effective_internship/pages/main_page/controller.dart';
 import 'package:effective_internship/repo/characters_repository.dart';
 import 'package:effective_internship/widgets/text/hero_caption.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,8 @@ class _MainPageState extends State<MainPage> {
   late int _currentColorIndex;
   final List<Color?> _colors = [];
   static int a = 0;
+
+  // final _controller = Get.find<MainPageController>();
 
   Future<PaletteGenerator> _getPalette(Image image) async {
     a += 1;
@@ -108,17 +112,13 @@ class _MainPageState extends State<MainPage> {
               flex: 3,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return HeroPage(
-                          heroId: hero.id,
-                          imageUrl: hero.thumbnailUrl!,
-                          heroName: hero.name,
-                        );
-                      },
-                    ),
+                  Get.toNamed(
+                    '/hero',
+                    arguments: HeroPageArgs(
+                      heroId: hero.id,
+                      imageUrl: hero.thumbnailUrl!,
+                      heroName: hero.name,
+                    )
                   );
                 },
                 child: Card(

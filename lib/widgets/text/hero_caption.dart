@@ -11,7 +11,6 @@ class HeroCaption extends StatelessWidget {
       alignment: Alignment.bottomLeft,
       child: DefaultTextStyle(
         style: const TextStyle(
-          // color: Colors.white,
           fontSize: 25,
           fontWeight: FontWeight.w700,
         ),

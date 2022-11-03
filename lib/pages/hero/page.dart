@@ -8,19 +8,15 @@ import 'package:get/get.dart';
 class HeroPage extends StatelessWidget {
   HeroPage({Key? key}) : super(key: key);
 
-
   final _controller = Get.find<HeroPageController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      // backgroundColor: Colors.red,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        // backgroundColor: Color(0x44000000),
         elevation: 0,
-        // title: Text("Title"),
       ),
       body: Container(
         decoration: BoxDecoration(

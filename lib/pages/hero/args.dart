@@ -1,5 +1,4 @@
 class HeroPageArgs {
-
   const HeroPageArgs({
     required this.heroId,
     required this.imageUrl,

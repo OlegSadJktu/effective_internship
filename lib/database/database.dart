@@ -17,12 +17,17 @@ class Heroes extends Table {
   Set<Column>? get primaryKey => {id};
 }
 
-
 @DriftDatabase(tables: [Heroes])
 class MarvelDatabase extends _$MarvelDatabase {
   MarvelDatabase() : super(_openConnection());
 
-  Future<void> insertHeroes(List<Hero> list) async {
+  static MarvelDatabase? _database;
+
+  static MarvelDatabase get instance {
+    return _database ??= MarvelDatabase();
+  }
+
+  Future<void> insertOrUpdateHeroes(List<Hero> list) async {
     await batch((batch) {
       batch.insertAllOnConflictUpdate(heroes, list);
     });
@@ -34,7 +39,6 @@ class MarvelDatabase extends _$MarvelDatabase {
 
   @override
   int get schemaVersion => 1;
-
 }
 
 LazyDatabase _openConnection() {
@@ -43,5 +47,4 @@ LazyDatabase _openConnection() {
     final file = File(path.join(dbFolder.path, 'db.sqlite'));
     return NativeDatabase(file);
   });
-
 }

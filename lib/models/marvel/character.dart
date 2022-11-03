@@ -5,7 +5,7 @@ class Character {
     required this.id,
     required this.name,
     required this.description,
-    this.thumbnailUrl,
+    required this.thumbnailUrl,
   });
 
   factory Character.fromJson(Map<String, dynamic> data) {
@@ -32,5 +32,5 @@ class Character {
   final int id;
   final String name;
   final String description;
-  final String? thumbnailUrl;
+  final String thumbnailUrl;
 }

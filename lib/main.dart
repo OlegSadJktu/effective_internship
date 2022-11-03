@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 void main() async {
-
   runApp(const MyApp());
 }
 
@@ -37,8 +36,8 @@ class MyApp extends StatelessWidget {
           binding: HeroPageBindings(),
         ),
       ],
-      home: const EnterPage(),
+      initialRoute: '/main',
+      // home: const MainPage(),
     );
   }
 }
-

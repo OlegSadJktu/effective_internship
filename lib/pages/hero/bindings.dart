@@ -6,5 +6,4 @@ class HeroPageBindings extends Bindings {
   void dependencies() {
     Get.lazyPut(HeroPageController.new);
   }
-
 }

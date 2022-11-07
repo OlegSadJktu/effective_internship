@@ -113,6 +113,12 @@ class _MainPageState extends State<MainPage> {
     final safeAreaPadding = MediaQuery.of(context).padding;
     return Scaffold(
       backgroundColor: const Color(0xff2A2629),
+      floatingActionButton: FloatingActionButton.small(
+        child: const Icon(Icons.refresh),
+        onPressed: () {
+          _controller.onInit();
+        }
+      ),
       body: SafeArea(
         child: Obx(
           () {

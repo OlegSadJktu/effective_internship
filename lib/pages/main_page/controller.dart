@@ -2,9 +2,16 @@ import 'dart:io';
 
 import 'package:effective_internship/models/marvel/character.dart';
 import 'package:effective_internship/repo/characters_repository.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
+
+Future<void> _handleMessage(RemoteMessage message) async {
+  print('asda');
+  return;
+}
 
 class MainPageController extends GetxController {
   final heroes = <Character>[].obs;
@@ -13,8 +20,20 @@ class MainPageController extends GetxController {
   final images = <Image>[].obs;
   final activePageIndex = 0.obs;
 
+  Future<void> printToken() async {
+    final a = await FirebaseMessaging.instance.getToken();
+    print(a);
+  }
+
+
   @override
   void onInit() {
+    print('reload');
+
+    FirebaseMessaging.onBackgroundMessage(_handleMessage);
+
+    printToken();
+
     _repo.getCharacters().then((value) {
       heroes.value = value;
       colors

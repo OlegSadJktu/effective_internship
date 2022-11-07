@@ -1,14 +1,21 @@
-import 'package:effective_internship/database/database.dart';
-import 'package:effective_internship/pages/enter_page.dart';
 import 'package:effective_internship/pages/hero/bindings.dart';
 import 'package:effective_internship/pages/hero/page.dart';
 import 'package:effective_internship/pages/main_page/bindings.dart';
 import 'package:effective_internship/pages/main_page/page.dart';
 import 'package:effective_internship/themes/dark.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'firebase_options.dart';
+
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  print('token => ${await FirebaseMessaging.instance.getToken()}');
   runApp(const MyApp());
 }
 

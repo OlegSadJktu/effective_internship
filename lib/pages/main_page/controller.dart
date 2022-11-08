@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'dart:math';
 
+import 'package:effective_internship/constants/paths.dart';
 import 'package:effective_internship/models/marvel/character.dart';
+import 'package:effective_internship/pages/hero/args.dart';
 import 'package:effective_internship/repo/characters_repository.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -8,32 +11,35 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-Future<void> _handleMessage(RemoteMessage message) async {
-  print('asda');
-  return;
-}
 
 class MainPageController extends GetxController {
-  final heroes = <Character>[].obs;
   final _repo = Get.put(CharactersRepository());
+  final heroes = <Character>[].obs;
   final colors = <Color?>[].obs;
-  final images = <Image>[].obs;
   final activePageIndex = 0.obs;
+  final images = <Image>[].obs;
 
   Future<void> printToken() async {
     final a = await FirebaseMessaging.instance.getToken();
     print(a);
   }
 
+  Future<void> _handleMessage(RemoteMessage message) async {
+    print('asda');
+    return;
+  }
 
   @override
   void onInit() {
     print('reload');
 
-    FirebaseMessaging.onBackgroundMessage(_handleMessage);
+    FirebaseMessaging.onMessage.listen(_handleMessage);
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      _openRandomHero();
+    });
 
     printToken();
-
+    heroes.clear();
     _repo.getCharacters().then((value) {
       heroes.value = value;
       colors
@@ -50,6 +56,20 @@ class MainPageController extends GetxController {
       _updateColors();
     });
     super.onInit();
+  }
+
+  Future<void> _openRandomHero() async {
+    final heroes = await _repo.getCharacters(needUpdate: false);
+    final index = Random().nextInt(heroes.length);
+    final hero = heroes[index];
+    await Get.toNamed(
+      Paths.heroPage,
+      arguments: HeroPageArgs(
+        heroId: hero.id,
+        imageUrl: hero.thumbnailUrl,
+        heroName: hero.name,
+      ),
+    );
   }
 
   Color? getColor() {

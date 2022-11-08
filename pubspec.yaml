@@ -26,6 +26,7 @@ dependencies:
   firebase_core: ^2.1.1
   firebase_messaging: ^14.0.4
   logger: ^1.1.0
+  cloud_functions: ^4.0.3
 
 dev_dependencies:
   flutter_test:

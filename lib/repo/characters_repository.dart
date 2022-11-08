@@ -71,8 +71,8 @@ class CharactersRepository extends GetxController {
     await _database.insertOrUpdateHeroes(heroes);
   }
 
-  Future<List<Character>> getCharacters() async {
-    if (await _checkConnection()) {
+  Future<List<Character>> getCharacters({bool needUpdate = true}) async {
+    if (needUpdate && await _checkConnection()) {
       try {
         final value = await Dio().request(_createRequest());
         final Map<String, dynamic> response = value.data;

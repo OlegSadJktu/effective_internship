@@ -4,11 +4,13 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:drift/drift.dart';
 import 'package:effective_internship/constants/config.dart';
 import 'package:effective_internship/database/database.dart';
 import 'package:effective_internship/models/marvel/character.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
+import 'package:logger/logger.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
@@ -63,6 +65,14 @@ class CharactersRepository extends GetxController {
     return '${Config.baseUrl}$_additionalOptions&ts=$timestamp&apikey=${Config.publicKey}&hash=$hash';
   }
 
+  String _createByIdRequiest({required int id}) {
+    final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final str = '$timestamp${Config.privateKey}${Config.publicKey}';
+    final hash = _createHash(str);
+    return '${Config.baseUrl}/$id?ts=$timestamp&apikey=${Config.publicKey}&hash=$hash';
+  }
+
+
   Future<void> _saveHeroes(Iterable<dynamic> list) async {
     final heroes = <Hero>[];
     for (final hero in list) {
@@ -85,4 +95,21 @@ class CharactersRepository extends GetxController {
     final response = await _database.getHeroes();
     return response.map(Character.fromDatabase).toList();
   }
+
+  Future<Character> getCharacter({required int id}) async {
+    if (await _checkConnection()) {
+      try {
+        final value = await Dio().request(_createByIdRequiest(id: id));
+        final Map<String, dynamic> responce = value.data;
+        final Iterable chars = responce['data']!['results']!;
+        await _saveHeroes(chars);
+      } catch (error) {
+        stderr.writeln(error);
+      }
+    }
+    final response = await _database.getHero(id);
+    return Character.fromDatabase(response);
+  }
+
+
 }

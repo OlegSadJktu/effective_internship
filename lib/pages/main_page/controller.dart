@@ -35,7 +35,7 @@ class MainPageController extends GetxController {
 
     FirebaseMessaging.onMessage.listen(_handleMessage);
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      _openRandomHero();
+      _openHero(int.parse(event.data['id'] as String));
     });
 
     printToken();
@@ -58,16 +58,13 @@ class MainPageController extends GetxController {
     super.onInit();
   }
 
-  Future<void> _openRandomHero() async {
-    final heroes = await _repo.getCharacters(needUpdate: false);
-    final index = Random().nextInt(heroes.length);
-    final hero = heroes[index];
+  Future<void> _openHero(int id) async {
+    // final hero = await _repo.getCharacter(id: id);
     await Get.toNamed(
       Paths.heroPage,
       arguments: HeroPageArgs(
-        heroId: hero.id,
-        imageUrl: hero.thumbnailUrl,
-        heroName: hero.name,
+        heroId: id,
+        // hero: hero,
       ),
     );
   }

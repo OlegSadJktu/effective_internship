@@ -46,11 +46,9 @@ class _MainPageState extends State<MainPage> {
               child: GestureDetector(
                 onTap: () {
                   Get.toNamed('/hero',
-                      arguments: HeroPageArgs(
-                        heroId: hero.id,
-                        imageUrl: hero.thumbnailUrl,
-                        heroName: hero.name,
-                      ));
+                    arguments: HeroPageArgs(
+                      hero: hero,
+                    ));
                 },
                 child: Card(
                   clipBehavior: Clip.antiAlias,

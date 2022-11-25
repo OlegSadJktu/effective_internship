@@ -1,5 +1,5 @@
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:effective_internship/constants/paths.dart';
 import 'package:effective_internship/models/marvel/character.dart';
@@ -21,19 +21,12 @@ class MainPageController extends GetxController {
 
   Future<void> printToken() async {
     final a = await FirebaseMessaging.instance.getToken();
-    print(a);
-  }
-
-  Future<void> _handleMessage(RemoteMessage message) async {
-    print('asda');
-    return;
+    log('token => $a',);
   }
 
   @override
   void onInit() {
-    print('reload');
 
-    FirebaseMessaging.onMessage.listen(_handleMessage);
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       _openHero(int.parse(event.data['id'] as String));
     });

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HeroCaption extends StatelessWidget {
-
-  const HeroCaption( this.text, {
-    Key? key
-  }) : super(key: key);
+  const HeroCaption(this.text, {Key? key}) : super(key: key);
 
   final String text;
 
@@ -14,7 +11,6 @@ class HeroCaption extends StatelessWidget {
       alignment: Alignment.bottomLeft,
       child: DefaultTextStyle(
         style: const TextStyle(
-          // color: Colors.white,
           fontSize: 25,
           fontWeight: FontWeight.w700,
         ),
@@ -27,5 +23,4 @@ class HeroCaption extends StatelessWidget {
       ),
     );
   }
-
 }

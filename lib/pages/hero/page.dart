@@ -1,46 +1,33 @@
+import 'dart:io';
+
+import 'package:effective_internship/pages/hero/controller.dart';
 import 'package:effective_internship/widgets/text/hero_caption.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class HeroPage extends StatefulWidget {
-  const HeroPage({
-    Key? key,
-    required this.heroId,
-    required this.imageUrl,
-    required this.heroName,
-  }) : super(key: key);
+class HeroPage extends StatelessWidget {
+  HeroPage({Key? key}) : super(key: key);
 
-  final int heroId;
-  final String imageUrl;
-  final String heroName;
+  final _controller = Get.find<HeroPageController>();
 
-  @override
-  State<HeroPage> createState() => _HeroPageState();
-}
-
-class _HeroPageState extends State<HeroPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      // backgroundColor: Colors.red,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        // backgroundColor: Color(0x44000000),
         elevation: 0,
-        // title: Text("Title"),
       ),
       body: Container(
         decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.fitHeight,
-            image: Image.network(widget.imageUrl).image,
-
-          )
-        ),
+            image: DecorationImage(
+          fit: BoxFit.fitHeight,
+          image: Image.file(File(_controller.args.imageUrl)).image,
+        )),
         child: Hero(
-          tag: 'caption${widget.heroId}',
+          tag: 'caption${_controller.args.heroId}',
           child: HeroCaption(
-            widget.heroName,
+            _controller.args.heroName,
           ),
         ),
       ),

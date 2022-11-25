@@ -45,7 +45,6 @@ class MyApp extends StatelessWidget {
         ),
       ],
       initialRoute: Paths.main,
-      // home: const MainPage(),
     );
   }
 }

@@ -59,12 +59,10 @@ class MainPageController extends GetxController {
   }
 
   Future<void> _openHero(int id) async {
-    // final hero = await _repo.getCharacter(id: id);
     await Get.toNamed(
       Paths.heroPage,
       arguments: HeroPageArgs(
         heroId: id,
-        // hero: hero,
       ),
     );
   }

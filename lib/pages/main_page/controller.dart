@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:effective_internship/constants/paths.dart';
 import 'package:effective_internship/models/marvel/character.dart';
 import 'package:effective_internship/pages/hero/args.dart';
@@ -10,7 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:rxdart/rxdart.dart';
 
+final pushNotificationsHandler = BehaviorSubject<RemoteMessage>();
 
 class MainPageController extends GetxController {
   final _repo = Get.put(CharactersRepository());
@@ -19,15 +22,37 @@ class MainPageController extends GetxController {
   final activePageIndex = 0.obs;
   final images = <Image>[].obs;
 
+  bool _isFetching = false;
+
   Future<void> printToken() async {
     final a = await FirebaseMessaging.instance.getToken();
     log('token => $a',);
+  }
+
+  Future<void> fetchHeroes(int offset) async {
+    if (_isFetching) {
+      return;
+    }
+    _isFetching = true;
+    try {
+      final newHeroes = await _repo.fetchCharacters(offset);
+      heroes.addAll(newHeroes);
+    } on DioError catch (e, s) {
+      print(e.response);
+    } finally {
+      _isFetching = false;
+    }
+
   }
 
   @override
   void onInit() {
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      _openHero(int.parse(event.data['id'] as String));
+    });
+
+    pushNotificationsHandler.stream.listen((event) {
       _openHero(int.parse(event.data['id'] as String));
     });
 
@@ -71,7 +96,9 @@ class MainPageController extends GetxController {
     if (colors.isEmpty) {
       return;
     }
-    activePageIndex.value = pageIndex;
+    if (pageIndex + 3 > heroes.length) {
+      fetchHeroes(heroes.length);
+    }
   }
 
   Future<void> _updateColors() async {

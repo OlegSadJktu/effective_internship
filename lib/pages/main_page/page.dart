@@ -21,13 +21,15 @@ class _MainPageState extends State<MainPage> {
 
   final _controller = Get.find<MainPageController>();
 
+
   Widget _pageView() {
     if (_controller.heroes.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
-    return CarouselSlider(
+    return CarouselSlider.builder(
+      itemCount: _controller.heroes.length + 1,
       carouselController: _pageController,
       options: CarouselOptions(
         viewportFraction: 0.77,
@@ -37,7 +39,11 @@ class _MainPageState extends State<MainPage> {
         enableInfiniteScroll: false,
         onPageChanged: (index, _) => _controller.notifyActivePageChanged(index),
       ),
-      items: _controller.heroes.map((hero) {
+      itemBuilder: (context, index, _) {
+        if (index == _controller.heroes.length) {
+          return const Center(child: CircularProgressIndicator(),);
+        }
+        final hero = _controller.heroes[index];
         return Column(
           children: [
             const Spacer(),
@@ -46,9 +52,9 @@ class _MainPageState extends State<MainPage> {
               child: GestureDetector(
                 onTap: () {
                   Get.toNamed('/hero',
-                    arguments: HeroPageArgs(
-                      hero: hero,
-                    ));
+                      arguments: HeroPageArgs(
+                        hero: hero,
+                      ));
                 },
                 child: Card(
                   clipBehavior: Clip.antiAlias,
@@ -75,7 +81,10 @@ class _MainPageState extends State<MainPage> {
             const Spacer(),
           ],
         );
-      }).toList(),
+
+      },
+      // items: _controller.heroes.map((hero) {
+      // }).toList(),
     );
   }
 
@@ -118,8 +127,7 @@ class _MainPageState extends State<MainPage> {
         }
       ),
       body: SafeArea(
-        child: Obx(
-          () {
+        child: Obx(() {
             return Stack(
               children: [
                 Positioned(
@@ -149,8 +157,7 @@ class _MainPageState extends State<MainPage> {
                 )
               ],
             );
-          },
-        ),
+        },),
       ),
     );
   }

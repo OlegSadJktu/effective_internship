@@ -2,6 +2,7 @@ import 'package:effective_internship/constants/paths.dart';
 import 'package:effective_internship/pages/hero/bindings.dart';
 import 'package:effective_internship/pages/hero/page.dart';
 import 'package:effective_internship/pages/main_page/bindings.dart';
+import 'package:effective_internship/pages/main_page/controller.dart';
 import 'package:effective_internship/pages/main_page/page.dart';
 import 'package:effective_internship/themes/dark.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,12 +12,16 @@ import 'package:get/get.dart';
 
 import 'firebase_options.dart';
 
+Future<void> _handleBackgroundMessage(RemoteMessage message) async {
+  pushNotificationsHandler.add(message);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging.onBackgroundMessage(_handleBackgroundMessage);
   runApp(const MyApp());
 }
 

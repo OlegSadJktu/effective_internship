@@ -1,11 +1,17 @@
+import 'package:effective_internship/models/marvel/character.dart';
+
+
+
 class HeroPageArgs {
   const HeroPageArgs({
-    required this.heroId,
-    required this.imageUrl,
-    required this.heroName,
-  });
+    this.heroId,
+    this.hero,
+  }) : assert((heroId != null) ^ (hero != null),
+  'Only id or hero must not be null');
 
-  final int heroId;
-  final String imageUrl;
-  final String heroName;
+  final int? heroId;
+  final Character? hero;
+
+  bool get heroIsObject => hero != null;
+
 }

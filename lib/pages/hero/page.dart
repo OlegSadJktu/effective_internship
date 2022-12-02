@@ -18,19 +18,33 @@ class HeroPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-          fit: BoxFit.fitHeight,
-          image: Image.file(File(_controller.args.imageUrl)).image,
-        )),
-        child: Hero(
-          tag: 'caption${_controller.args.heroId}',
-          child: HeroCaption(
-            _controller.args.heroName,
+      body: _controller.obx((value) {
+        if (_controller.status.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (_controller.status.isError) {
+          return Center(
+            child: Text(
+              _controller.status.errorMessage ?? 'Неизвестная ошибка',
+            ),
+          );
+        }
+        return Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+            fit: BoxFit.fitHeight,
+            image: Image.file(File(_controller.image)).image,
+          )),
+          child: Hero(
+            tag: 'caption${_controller.heroId}',
+            child: HeroCaption(
+              _controller.heroName,
+            ),
           ),
-        ),
-      ),
+        );
+      },),
     );
   }
 }

@@ -46,11 +46,9 @@ class _MainPageState extends State<MainPage> {
               child: GestureDetector(
                 onTap: () {
                   Get.toNamed('/hero',
-                      arguments: HeroPageArgs(
-                        heroId: hero.id,
-                        imageUrl: hero.thumbnailUrl,
-                        heroName: hero.name,
-                      ));
+                    arguments: HeroPageArgs(
+                      hero: hero,
+                    ));
                 },
                 child: Card(
                   clipBehavior: Clip.antiAlias,
@@ -113,6 +111,12 @@ class _MainPageState extends State<MainPage> {
     final safeAreaPadding = MediaQuery.of(context).padding;
     return Scaffold(
       backgroundColor: const Color(0xff2A2629),
+      floatingActionButton: FloatingActionButton.small(
+        child: const Icon(Icons.refresh),
+        onPressed: () {
+          _controller.onInit();
+        }
+      ),
       body: SafeArea(
         child: Obx(
           () {

@@ -1,20 +1,38 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:effective_internship/constants/paths.dart';
 import 'package:effective_internship/models/marvel/character.dart';
+import 'package:effective_internship/pages/hero/args.dart';
 import 'package:effective_internship/repo/characters_repository.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
 
+
 class MainPageController extends GetxController {
-  final heroes = <Character>[].obs;
   final _repo = Get.put(CharactersRepository());
+  final heroes = <Character>[].obs;
   final colors = <Color?>[].obs;
-  final images = <Image>[].obs;
   final activePageIndex = 0.obs;
+  final images = <Image>[].obs;
+
+  Future<void> printToken() async {
+    final a = await FirebaseMessaging.instance.getToken();
+    log('token => $a',);
+  }
 
   @override
   void onInit() {
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      _openHero(int.parse(event.data['id'] as String));
+    });
+
+    printToken();
+    heroes.clear();
     _repo.getCharacters().then((value) {
       heroes.value = value;
       colors
@@ -31,6 +49,15 @@ class MainPageController extends GetxController {
       _updateColors();
     });
     super.onInit();
+  }
+
+  Future<void> _openHero(int id) async {
+    await Get.toNamed(
+      Paths.heroPage,
+      arguments: HeroPageArgs(
+        heroId: id,
+      ),
+    );
   }
 
   Color? getColor() {

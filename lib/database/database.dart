@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:effective_internship/models/marvel/character.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 part 'database.g.dart';
@@ -35,6 +36,11 @@ class MarvelDatabase extends _$MarvelDatabase {
 
   Future<List<Hero>> getHeroes() async {
     return select(heroes).get();
+  }
+
+  Future<Hero> getHero(int id) async {
+    return (select(heroes)..where((table) => table.id.equals(id)))
+        .getSingle();
   }
 
   @override
